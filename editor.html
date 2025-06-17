@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>DIY Instruction Editor</title>
+  <title>DIY Instruction Editor with Shapes</title>
   <style>
     body {
       font-family: sans-serif;
@@ -10,7 +10,7 @@
       max-width: 600px;
       margin: auto;
     }
-    input, button {
+    input, select, button {
       margin: 5px 0;
       padding: 8px;
       width: 100%;
@@ -30,8 +30,20 @@
   <h1>DIY Instruction Editor</h1>
 
   <input type="text" id="text" placeholder="Instruction text" />
-  <input type="number" id="top" placeholder="Top (px)" />
-  <input type="number" id="left" placeholder="Left (px)" />
+  <input type="number" id="top" placeholder="Text Top (px)" />
+  <input type="number" id="left" placeholder="Text Left (px)" />
+
+  <h3>Optional Shape</h3>
+  <select id="shapeType">
+    <option value="">None</option>
+    <option value="circle">Circle</option>
+    <option value="arrow">Arrow</option>
+    <option value="rectangle">Rectangle</option>
+  </select>
+  <input type="number" id="shapeTop" placeholder="Shape Top (px)" />
+  <input type="number" id="shapeLeft" placeholder="Shape Left (px)" />
+  <input type="number" id="shapeSize" placeholder="Shape Size (px)" />
+
   <button onclick="addStep()">Add Step</button>
 
   <h3>Steps:</h3>
@@ -49,14 +61,33 @@
       const left = parseInt(document.getElementById('left').value, 10);
 
       if (!text || isNaN(top) || isNaN(left)) {
-        alert("Please enter all fields.");
+        alert("Please enter instruction text and text position.");
         return;
       }
 
-      steps.push({ text, top, left });
+      const shapeType = document.getElementById('shapeType').value;
+      const shapeTop = parseInt(document.getElementById('shapeTop').value, 10);
+      const shapeLeft = parseInt(document.getElementById('shapeLeft').value, 10);
+      const shapeSize = parseInt(document.getElementById('shapeSize').value, 10);
+
+      let shape = null;
+      if (shapeType && !isNaN(shapeTop) && !isNaN(shapeLeft)) {
+        shape = { type: shapeType, top: shapeTop, left: shapeLeft };
+        if (!isNaN(shapeSize)) {
+          shape.size = shapeSize;
+        }
+      }
+
+      steps.push({ text, top, left, ...(shape ? { shape } : {}) });
+
       document.getElementById('text').value = '';
       document.getElementById('top').value = '';
       document.getElementById('left').value = '';
+      document.getElementById('shapeType').value = '';
+      document.getElementById('shapeTop').value = '';
+      document.getElementById('shapeLeft').value = '';
+      document.getElementById('shapeSize').value = '';
+
       renderSteps();
     }
 
@@ -66,9 +97,11 @@
       steps.forEach((step, index) => {
         const div = document.createElement('div');
         div.className = 'step';
+        const shapeDesc = step.shape ? `Shape: ${step.shape.type} (Top: ${step.shape.top}, Left: ${step.shape.left}, Size: ${step.shape.size || 'default'})` : 'No shape';
         div.innerHTML = `
           <strong>${step.text}</strong><br/>
-          Top: ${step.top}px, Left: ${step.left}px
+          Text Top: ${step.top}px, Left: ${step.left}px<br/>
+          ${shapeDesc}
           <div class="step-actions">
             <button onclick="removeStep(${index})">Delete</button>
           </div>
