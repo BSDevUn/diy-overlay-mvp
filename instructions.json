@@ -1,7 +1,57 @@
 [
-  { "text": "Step 1: Mark where you want the frame", "top": 100, "left": 50 },
-  { "text": "Step 2: Level the frame", "top": 120, "left": 60 },
-  { "text": "Step 3: Drill holes", "top": 140, "left": 70 },
-  { "text": "Step 4: Insert anchors", "top": 160, "left": 80 },
-  { "text": "Step 5: Hang the frame", "top": 180, "left": 90 }
+ {
+  "text": "Step 1: Drill here",
+  "top": 100,
+  "left": 50,
+  "shape": {
+    "type": "circle",
+    "top": 110,
+    "left": 60,
+    "size": 30
+    }
+  },
+  { 
+    "text": "Step 2: Level the frame", 
+    "top": 100,
+    "left": 50,
+    "shape": {
+      "type": "circle",
+      "top": 110,
+      "left": 60,
+      "size": 30
+    }
+  },
+  {
+    "text": "Step 3: Drill holes",
+    "top": 100,
+    "left": 50,
+    "shape": {
+      "type": "arrow",
+      "top": 110,
+      "left": 60,
+      "size": 30
+    }
+  },
+  {
+    "text": "Step 4: Insert anchors",
+    "top": 100,
+    "left": 50,
+    "shape": {
+      "type": "circle",
+      "top": 110,
+      "left": 60,
+      "size": 30
+    }
+  },
+  {
+    "text": "Step 5: Hang the frame",
+    "top": 100,
+    "left": 50,
+    "shape": {
+      "type": "arrow",
+      "top": 110,
+      "left": 60,
+      "size": 30
+    }
+}
 ]
