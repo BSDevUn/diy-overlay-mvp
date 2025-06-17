@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DIY Instruction Editor</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    input, button {
+      margin: 5px 0;
+      padding: 8px;
+      width: 100%;
+    }
+    .step {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 6px;
+    }
+    .step-actions {
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>DIY Instruction Editor</h1>
+
+  <input type="text" id="text" placeholder="Instruction text" />
+  <input type="number" id="top" placeholder="Top (px)" />
+  <input type="number" id="left" placeholder="Left (px)" />
+  <button onclick="addStep()">Add Step</button>
+
+  <h3>Steps:</h3>
+  <div id="stepsList"></div>
+
+  <button onclick="exportJSON()">Export as JSON</button>
+  <textarea id="output" rows="10" style="width:100%; margin-top: 10px;"></textarea>
+
+  <script>
+    let steps = [];
+
+    function addStep() {
+      const text = document.getElementById('text').value;
+      const top = parseInt(document.getElementById('top').value, 10);
+      const left = parseInt(document.getElementById('left').value, 10);
+
+      if (!text || isNaN(top) || isNaN(left)) {
+        alert("Please enter all fields.");
+        return;
+      }
+
+      steps.push({ text, top, left });
+      document.getElementById('text').value = '';
+      document.getElementById('top').value = '';
+      document.getElementById('left').value = '';
+      renderSteps();
+    }
+
+    function renderSteps() {
+      const list = document.getElementById('stepsList');
+      list.innerHTML = '';
+      steps.forEach((step, index) => {
+        const div = document.createElement('div');
+        div.className = 'step';
+        div.innerHTML = `
+          <strong>${step.text}</strong><br/>
+          Top: ${step.top}px, Left: ${step.left}px
+          <div class="step-actions">
+            <button onclick="removeStep(${index})">Delete</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function removeStep(index) {
+      steps.splice(index, 1);
+      renderSteps();
+    }
+
+    function exportJSON() {
+      const json = JSON.stringify(steps, null, 2);
+      document.getElementById('output').value = json;
+    }
+  </script>
+</body>
+</html>
