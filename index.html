@@ -37,35 +37,42 @@
   <br/>
   <button onclick="nextStep()">Next Step</button>
 
-  <script>
-    const steps = [
-      { text: "Step 1: Mark where you want the frame", top: 100, left: 50 },
-      { text: "Step 2: Level the frame", top: 120, left: 60 },
-      { text: "Step 3: Drill holes", top: 140, left: 70 },
-      { text: "Step 4: Insert anchors", top: 160, left: 80 },
-      { text: "Step 5: Hang the frame", top: 180, left: 90 },
-    ];
-    let currentStep = 0;
+ <script>
+  let steps = [];
+  let currentStep = 0;
 
-    const overlay = document.getElementById('overlay');
+  const overlay = document.getElementById('overlay');
 
-    function nextStep() {
-      currentStep = (currentStep + 1) % steps.length;
+  function nextStep() {
+    if (steps.length === 0) return;
+    currentStep = (currentStep + 1) % steps.length;
+    updateOverlay();
+  }
+
+  function updateOverlay() {
+    const step = steps[currentStep];
+    overlay.innerText = step.text;
+    overlay.style.top = step.top + "px";
+    overlay.style.left = step.left + "px";
+  }
+
+  async function loadInstructions() {
+    try {
+      const response = await fetch('instructions.json');
+      steps = await response.json();
       updateOverlay();
+    } catch (error) {
+      overlay.innerText = "Error loading instructions.";
+      console.error(error);
     }
+  }
 
-    function updateOverlay() {
-      const step = steps[currentStep];
-      overlay.innerText = step.text;
-      overlay.style.top = step.top + "px";
-      overlay.style.left = step.left + "px";
-    }
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      document.getElementById('webcam').srcObject = stream;
+      loadInstructions(); // load the steps from file after video starts
+    });
+</script>
 
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        document.getElementById('webcam').srcObject = stream;
-        updateOverlay();
-      });
-  </script>
 </body>
 </html>
