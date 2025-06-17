@@ -5,8 +5,8 @@
   "left": 50,
   "shape": {
     "type": "circle",
-    "top": 110,
-    "left": 60,
+    "top": 210,
+    "left": 160,
     "size": 30
     }
   },
@@ -15,10 +15,10 @@
     "top": 100,
     "left": 50,
     "shape": {
-      "type": "circle",
-      "top": 110,
-      "left": 60,
-      "size": 30
+      "type": "rectangle",
+      "top": 210,
+      "left": 160,
+      "size": 0
     }
   },
   {
@@ -27,9 +27,9 @@
     "left": 50,
     "shape": {
       "type": "arrow",
-      "top": 110,
-      "left": 60,
-      "size": 30
+      "top": 210,
+      "left": 160,
+      "size": 10
     }
   },
   {
@@ -38,8 +38,8 @@
     "left": 50,
     "shape": {
       "type": "circle",
-      "top": 110,
-      "left": 60,
+      "top": 210,
+      "left": 160,
       "size": 30
     }
   },
@@ -49,8 +49,8 @@
     "left": 50,
     "shape": {
       "type": "arrow",
-      "top": 110,
-      "left": 60,
+      "top": 210,
+      "left": 160,
       "size": 30
     }
 }
