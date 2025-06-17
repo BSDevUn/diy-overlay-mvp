@@ -2,26 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DIY Overlay MVP</title>
+  <title>DIY Overlay with Shapes</title>
   <style>
     #webcam {
       width: 100%;
       max-width: 640px;
     }
-    #overlay {
+    .container {
+      position: relative;
+      display: inline-block;
+    }
+    #overlay, #shape {
       position: absolute;
-      top: 100px;
-      left: 50px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    #overlay {
       color: red;
       font-size: 1.5rem;
       background: rgba(255,255,255,0.7);
       padding: 10px;
       border-radius: 8px;
     }
-    .container {
-      position: relative;
-      display: inline-block;
+    .circle {
+      border: 3px solid blue;
+      border-radius: 50%;
+      background: rgba(0, 0, 255, 0.1);
+    }
+    .arrow {
+      width: 0; 
+      height: 0; 
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid green;
     }
     button {
       margin-top: 20px;
@@ -29,50 +42,74 @@
   </style>
 </head>
 <body>
-  <h1>DIY Instruction Overlay</h1>
+  <h1>DIY Instruction Viewer</h1>
   <div class="container">
     <video id="webcam" autoplay playsinline></video>
     <div id="overlay">Loading...</div>
+    <div id="shape"></div>
   </div>
   <br/>
   <button onclick="nextStep()">Next Step</button>
 
- <script>
-  let steps = [];
-  let currentStep = 0;
+  <script>
+    let steps = [];
+    let currentStep = 0;
 
-  const overlay = document.getElementById('overlay');
+    const overlay = document.getElementById('overlay');
+    const shapeEl = document.getElementById('shape');
 
-  function nextStep() {
-    if (steps.length === 0) return;
-    currentStep = (currentStep + 1) % steps.length;
-    updateOverlay();
-  }
-
-  function updateOverlay() {
-    const step = steps[currentStep];
-    overlay.innerText = step.text;
-    overlay.style.top = step.top + "px";
-    overlay.style.left = step.left + "px";
-  }
-
-  async function loadInstructions() {
-    try {
-      const response = await fetch('instructions.json');
-      steps = await response.json();
+    function nextStep() {
+      if (steps.length === 0) return;
+      currentStep = (currentStep + 1) % steps.length;
       updateOverlay();
-    } catch (error) {
-      overlay.innerText = "Error loading instructions.";
-      console.error(error);
     }
-  }
 
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-      document.getElementById('webcam').srcObject = stream;
-      loadInstructions(); // load the steps from file after video starts
-    });
-</script>
+    function updateOverlay() {
+      const step = steps[currentStep];
+      overlay.innerText = step.text;
+      overlay.style.top = step.top + "px";
+      overlay.style.left = step.left + "px";
 
+      // Clear previous shape
+      shapeEl.style.display = "none";
+      shapeEl.className = "";
+      shapeEl.style.top = "";
+      shapeEl.style.left = "";
+      shapeEl.style.width = "";
+      shapeEl.style.height = "";
+
+      if (step.shape) {
+        shapeEl.style.display = "block";
+        shapeEl.style.top = step.shape.top + "px";
+        shapeEl.style.left = step.shape.left + "px";
+
+        if (step.shape.type === "circle") {
+          shapeEl.className = "circle";
+          const size = step.shape.size || 30;
+          shapeEl.style.width = size + "px";
+          shapeEl.style.height = size + "px";
+        } else if (step.shape.type === "arrow") {
+          shapeEl.className = "arrow";
+        }
+      }
+    }
+
+    async function loadInstructions() {
+      try {
+        const response = await fetch('instructions.json');
+        steps = await response.json();
+        updateOverlay();
+      } catch (error) {
+        overlay.innerText = "Error loading instructions.";
+        console.error(error);
+      }
+    }
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        document.getElementById('webcam').srcObject = stream;
+        loadInstructions();
+      });
+  </script>
 </body>
 </html>
